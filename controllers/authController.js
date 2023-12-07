@@ -84,6 +84,7 @@ async function authLogin(req, res) {
         photoUri: existingUser.photoUri,
         follows: existingUser.follows,
         followers: existingUser.followers,
+        role:existingUser.role
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }

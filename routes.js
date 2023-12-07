@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("./controllers/authController");
-
+const category = require("./controllers/categoriesController");
+const checkAuth = require("./utils/checkAuth");
 router.post("/v1/auth/register", auth.authUser);
 router.post("/v1/auth/login", auth.authLogin);
+router.get("/v1/category", category.getCategories);
+router.post("/v1/category", checkAuth, category.addCategory);
 module.exports = router;
