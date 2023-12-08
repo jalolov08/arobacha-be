@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
+const Subcategory = require("./Subcategory");
 
-const categorySchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
-
+const categorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    photoUri:{
-        type:String,
-        required:false
+    photoUri: {
+      type: String,
+      required: false,
     },
-    
-},
-{ timestamps: true }
-)
+    subcategories: [Subcategory.schema],
+  },
+  { timestamps: true }
+);
 module.exports = mongoose.model("Category", categorySchema);
