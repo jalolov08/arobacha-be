@@ -5,7 +5,7 @@ require("dotenv").config();
 
 async function authUser(req, res) {
   try {
-    const { name, surname, phone, username, password } = req.body;
+    const { name, surname, phone, username, password , photoUri} = req.body;
 
     if (!name || !surname || !phone || !username || !password) {
       return res
@@ -43,6 +43,7 @@ async function authUser(req, res) {
       phone,
       username,
       password: hashedPassword,
+      photoUri,
     });
 
     const savedUser = await newUser.save();
@@ -84,10 +85,11 @@ async function authLogin(req, res) {
         photoUri: existingUser.photoUri,
         follows: existingUser.follows,
         followers: existingUser.followers,
-        role:existingUser.role
+        role:existingUser.role,
+        photoUri:existingUser.photoUri
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { algorithm: "HS256" }
     );
 
     res.status(200).json({ token });

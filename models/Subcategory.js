@@ -6,7 +6,9 @@ const subcategorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    photoUri: String,
   },
+
   { timestamps: true }
 );
 

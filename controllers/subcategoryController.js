@@ -33,7 +33,7 @@ async function getSubcategories(req, res) {
 }
 async function addSubcategory(req, res) {
   const categoryId = req.params.id;
-  const { subcategory } = req.body;
+  const { subcategory , photoUri} = req.body;
 
   try {
     const category = await Category.findById(categoryId);
@@ -49,6 +49,7 @@ async function addSubcategory(req, res) {
       return res.status(201).json({
         message: "Subcategory added to the category successfully",
         category,
+        photoUri
       });
     } else {
       return res
@@ -63,7 +64,7 @@ async function addSubcategory(req, res) {
 async function updateSubcategory(req, res) {
   const categoryId = req.params.categoryId;
   const subcategoryId = req.params.subcategoryId;
-  const { subcategory } = req.body;
+  const { subcategory , photoUri } = req.body;
 
   try {
     const category = await Category.findById(categoryId);
@@ -85,6 +86,7 @@ async function updateSubcategory(req, res) {
       return res.status(200).json({
         message: "Subcategory updated successfully",
         category,
+        photoUri
       });
     } else {
       return res
