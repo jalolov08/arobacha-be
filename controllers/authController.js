@@ -5,7 +5,7 @@ require("dotenv").config();
 
 async function authUser(req, res) {
   try {
-    const { name, surname, phone, username, password , photoUri} = req.body;
+    const { name, surname, phone, username, password, photoUri } = req.body;
 
     if (!name || !surname || !phone || !username || !password) {
       return res
@@ -35,6 +35,23 @@ async function authUser(req, res) {
       });
     }
 
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Пароль должен содержать минимум 8 символов." });
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!usernameRegex.test(username)) {
+      return res
+        .status(400)
+        .json({ error: "Недопустимый формат имени пользователя." });
+    }
+
+    if (photoUri && !isValidURI(photoUri)) {
+      return res.status(400).json({ error: "Неверный формат URI фотографии." });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -55,6 +72,7 @@ async function authUser(req, res) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
 async function authLogin(req, res) {
   try {
     const { username, password } = req.body;
@@ -85,8 +103,8 @@ async function authLogin(req, res) {
         photoUri: existingUser.photoUri,
         follows: existingUser.follows,
         followers: existingUser.followers,
-        role:existingUser.role,
-        photoUri:existingUser.photoUri
+        role: existingUser.role,
+        photoUri: existingUser.photoUri,
       },
       process.env.JWT_SECRET,
       { algorithm: "HS256" }
@@ -96,6 +114,15 @@ async function authLogin(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+function isValidURI(uri) {
+  try {
+    new URL(uri);
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
