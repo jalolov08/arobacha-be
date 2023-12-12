@@ -20,8 +20,10 @@ router.post(
   }
 );
 
-router.post("/v1/add/car", checkAuth, car.addNewCar);
-
+router.post("/v1/category/car/addCar", checkAuth, car.addNewCar);
+router.get("/v1/category/car/getCar", car.getAllCars);
+router.get("/v1/category/car/:id", car.getCarById);
+router.delete("/v1/category/car/delete/:carId", checkAuth, car.deleteCar);
 router.post("/v1/add/brand", checkAuth, brand.addBrand);
 router.put("/v1/update/brand", checkAuth, brand.updateBrand);
 router.delete("/v1/delete/brand/:brand", checkAuth, brand.deleteBrand);
