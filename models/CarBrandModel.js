@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const brandModelSchema = new mongoose.Schema({
+const carBrandModelSchema = new mongoose.Schema({
   brand: {
     type: String,
     required: true,
@@ -18,6 +18,6 @@ const brandModelSchema = new mongoose.Schema({
   }],
 });
 
-const BrandModel = mongoose.model("BrandModel", brandModelSchema);
+const CarBrandModel = mongoose.model("CarBrandModel", carBrandModelSchema);
 
-module.exports = BrandModel;
+module.exports = CarBrandModel;

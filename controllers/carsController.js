@@ -1,5 +1,5 @@
 const Car = require("../models/Car");
-const BrandModel = require("../models/BrandModel");
+const CarBrandModel = require("../models/CarBrandModel");
 const arrayUtils = require("../utils/arrayUtils");
 const cron = require("node-cron");
 const { encryptData } = require("../utils/encryptData");
@@ -26,9 +26,9 @@ async function addNewCar(req, res) {
     mileage,
     fuelType,
     transmission,
+    engineСapacity,
     condition,
     description,
-    owner,
     color,
     doors,
     bodyType,
@@ -42,7 +42,7 @@ async function addNewCar(req, res) {
       return res.status(400).json({ error: "Brand and Model are required." });
     }
 
-    const existingBrand = await BrandModel.findOne({ brand });
+    const existingBrand = await CarBrandModel.findOne({ brand });
 
     if (!existingBrand || !existingBrand.models.includes(model)) {
       return res.status(400).json({ error: "Invalid Brand or Model." });
@@ -60,6 +60,7 @@ async function addNewCar(req, res) {
       !doors ||
       !bodyType ||
       !customsCleared ||
+      !engineСapacity ||
       !city ||
       !photos
     ) {
@@ -90,9 +91,10 @@ async function addNewCar(req, res) {
       mileage,
       fuelType,
       transmission,
+      engineСapacity,
       condition,
       description,
-      owner,
+      owner:req.user._id,
       color,
       doors,
       bodyType,

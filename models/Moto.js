@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const carSchema = new mongoose.Schema({
+const motorcycleSchema = new mongoose.Schema({
   brand: {
     type: String,
     required: true,
@@ -31,7 +31,7 @@ const carSchema = new mongoose.Schema({
   fuelType: {
     type: String,
     required: true,
-    enum: ["Gasoline", "Diesel", "Electric", "Hybrid", "Other"],
+    enum: ["Gasoline", "Electric", "Hybrid", "Other"],
   },
   transmission: {
     type: String,
@@ -60,13 +60,13 @@ const carSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  doors: {
+  wheels: {
     type: Number,
     required: true,
   },
-  bodyType: {
+  bikeType: {
     type: String,
-    enum: ["Sedan", "Coupe", "SUV", "Truck", "Van", "Convertible", "Other"],
+    enum: ["Cruiser", "Sportbike", "Touring", "Off-road", "Scooter", "Other"],
     required: true,
   },
   customsCleared: {
@@ -88,6 +88,6 @@ const carSchema = new mongoose.Schema({
   },
 });
 
-const Car = mongoose.model("Car", carSchema);
+const Moto = mongoose.model("Moto", motorcycleSchema);
 
-module.exports = Car;
+module.exports = Moto;

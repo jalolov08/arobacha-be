@@ -1,5 +1,33 @@
-const BrandModel = require("../models/BrandModel");
+const CarBrandModel = require("../models/CarBrandModel");
 
+async function getCarBrands(req, res) {
+  try {
+    const allBrands = await CarBrandModel.find().sort({ brand: "asc" });
+
+    if (allBrands.length === 0) {
+      return res.status(404).json({ error: "No brands found" });
+    }
+
+    res.status(200).json(allBrands);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+async function getBrandModelsById(req, res) {
+  const { id } = req.params;
+
+  try {
+    const brand = await CarBrandModel.findById(id);
+
+    if (!brand) {
+      return res.status(404).json({ error: "Brand not found" });
+    }
+
+    res.status(200).json({ models: brand.models });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 async function addBrand(req, res) {
   const { brand, models, logo } = req.body;
 
@@ -10,7 +38,7 @@ async function addBrand(req, res) {
         .json({ error: "Permission denied. User is not an admin." });
     }
 
-    let existingBrand = await BrandModel.findOne({ brand });
+    let existingBrand = await CarBrandModel.findOne({ brand });
 
     if (existingBrand) {
       const uniqueModels = [...new Set([...existingBrand.models, ...models])];
@@ -18,7 +46,7 @@ async function addBrand(req, res) {
       const updatedBrand = await existingBrand.save();
       res.status(200).json({ ...updatedBrand._doc });
     } else {
-      const newBrand = new BrandModel({
+      const newBrand = new CarBrandModel({
         brand,
         models,
         logo,
@@ -42,11 +70,11 @@ async function updateBrand(req, res) {
         .json({ error: "Permission denied. User is not an admin." });
     }
 
-    let existingBrand = await BrandModel.findOne({ brand });
+    let existingBrand = await CarBrandModel.findOne({ brand });
 
     if (existingBrand) {
       existingBrand.models = [...new Set([...existingBrand.models, ...models])];
-      existingBrand.logo = logo || existingBrand.logo; // Update logo if provided
+      existingBrand.logo = logo || existingBrand.logo;
       const updatedBrand = await existingBrand.save();
       res.status(200).json({ ...updatedBrand._doc });
     } else {
@@ -67,7 +95,7 @@ async function deleteBrand(req, res) {
         .json({ error: "Permission denied. User is not an admin." });
     }
 
-    let existingBrand = await BrandModel.findOne({ brand });
+    let existingBrand = await CarBrandModel.findOne({ brand });
 
     if (existingBrand) {
       await existingBrand.remove();
@@ -84,4 +112,6 @@ module.exports = {
   addBrand,
   updateBrand,
   deleteBrand,
+  getCarBrands,
+  getBrandModelsById,
 };
