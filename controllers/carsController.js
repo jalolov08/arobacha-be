@@ -3,6 +3,7 @@ const CarBrandModel = require("../models/CarBrandModel");
 const arrayUtils = require("../utils/arrayUtils");
 const cron = require("node-cron");
 const { encryptData } = require("../utils/encryptData");
+const { allowedCities } = require("../constants/allowedCities");
 function resetViewsToday() {
   cron.schedule("0 0 * * *", async () => {
     try {
@@ -16,7 +17,6 @@ function resetViewsToday() {
 
 resetViewsToday();
 const encryptionKey = process.env.CRYPTO_SECRET;
-
 async function addNewCar(req, res) {
   const {
     brand,
@@ -26,7 +26,7 @@ async function addNewCar(req, res) {
     mileage,
     fuelType,
     transmission,
-    engineСapacity,
+    engineCapacity,
     condition,
     description,
     color,
@@ -47,6 +47,9 @@ async function addNewCar(req, res) {
     if (!existingBrand || !existingBrand.models.includes(model)) {
       return res.status(400).json({ error: "Invalid Brand or Model." });
     }
+    if (!allowedCities.includes(city)) {
+      return res.status(400).json({ error: "Invalid city." });
+    }
 
     if (
       !year ||
@@ -55,16 +58,19 @@ async function addNewCar(req, res) {
       !fuelType ||
       !transmission ||
       !condition ||
-      !owner ||
+      !description ||
       !color ||
       !doors ||
       !bodyType ||
       !customsCleared ||
-      !engineСapacity ||
+      !engineCapacity ||
       !city ||
       !photos
     ) {
       return res.status(400).json({ error: "All fields are required." });
+    }
+    if (!allowedCities.includes(city)) {
+      return res.status(400).json({ error: "Invalid city." });
     }
 
     if (
@@ -91,10 +97,10 @@ async function addNewCar(req, res) {
       mileage,
       fuelType,
       transmission,
-      engineСapacity,
+      engineCapacity,
       condition,
       description,
-      owner:req.user._id,
+      owner: req.user._id,
       color,
       doors,
       bodyType,

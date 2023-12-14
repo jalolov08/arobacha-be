@@ -2,6 +2,8 @@ const Moto = require("../models/Moto");
 const MotoBrandModel = require("../models/MotoBrandModel");
 const arrayUtils = require("../utils/arrayUtils");
 const { encryptData } = require("../utils/encryptData");
+const { allowedCities } = require("../constants/allowedCities");
+
 require("dotenv").config();
 
 const encryptionKey = process.env.CRYPTO_SECRET;
@@ -15,7 +17,7 @@ async function addNewMoto(req, res) {
     mileage,
     fuelType,
     transmission,
-    engineСapacity,
+    engineCapacity,
     condition,
     description,
     color,
@@ -29,10 +31,14 @@ async function addNewMoto(req, res) {
     if (!brand || !model) {
       return res.status(400).json({ error: "Brand and Model are required." });
     }
+
     const existingBrand = await MotoBrandModel.findOne({ brand });
 
     if (!existingBrand || !existingBrand.models.includes(model)) {
       return res.status(400).json({ error: "Invalid Brand or Model." });
+    }
+    if (!allowedCities.includes(city)) {
+      return res.status(400).json({ error: "Invalid city." });
     }
 
     if (
@@ -56,7 +62,7 @@ async function addNewMoto(req, res) {
       mileage,
       fuelType,
       transmission,
-      engineСapacity,
+      engineCapacity,
       condition,
       description,
       owner: req.user._id,
@@ -114,9 +120,8 @@ async function deleteMoto(req, res) {
         error: "Permission denied.User is not the owner of the moto",
       });
     }
-    await Moto.deleteOne({_id:motoId})
+    await Moto.deleteOne({ _id: motoId });
     res.status(200).json({ message: "Moto deleted successfully." });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -126,5 +131,5 @@ module.exports = {
   addNewMoto,
   getMoto,
   getMotoById,
-  deleteMoto
+  deleteMoto,
 };

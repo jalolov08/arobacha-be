@@ -38,7 +38,7 @@ const carSchema = new mongoose.Schema({
     enum: ["Automatic", "Manual"],
     required: true,
   },
-  engineСapacity: {
+  engineCapacity: {
     type: Number,
     required: true,
   },
