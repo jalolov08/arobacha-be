@@ -14,7 +14,6 @@ router.post(
     res.json({ url: `/uploads/avatar/${req.file.filename}` });
   }
 );
-
 router.post(
   "/upload/brand",
   checkAuth,

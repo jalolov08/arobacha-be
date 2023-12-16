@@ -1,10 +1,10 @@
-const Car = require("../models/Car");
+const Moto = require("../models/Moto");
 const arrayUtils = require("../utils/arrayUtils");
 const { encryptData } = require("../utils/encryptData");
 require("dotenv").config
 const encryptionKey = process.env.CRYPTO_SECRET;
 
-async function getFilteredCars(req, res) {
+async function getFilteredMotos(req, res) {
   const {
     brands,
     models,
@@ -16,8 +16,8 @@ async function getFilteredCars(req, res) {
     maxMileage,
     city,
     customsCleared,
-    bodyType,
-    doors,
+    bikeType,
+    wheels,
     minEngineCapacity,
     maxEngineCapacity,
     transmission,
@@ -25,7 +25,6 @@ async function getFilteredCars(req, res) {
     withPhoto,
     condition,
   } = req.query;
-
   try {
     let query = {};
 
@@ -80,18 +79,18 @@ async function getFilteredCars(req, res) {
     }
 
     if (city) {
-      query.city = { $in: city.split(",") }; 
+      query.city = { $in: city.split(",") };
     }
 
     if (customsCleared !== undefined) {
       query.customsCleared = customsCleared === "true";
     }
 
-    if (bodyType) {
-      query.bodyType = { $in: bodyType.split(",") }; 
+    if (bikeType) {
+      query.bodyType = { $in: bodyType.split(",") };
     }
 
-    if (doors) {
+    if (wheels) {
       query.doors = parseInt(doors);
     }
     if (condition) {
@@ -118,23 +117,20 @@ async function getFilteredCars(req, res) {
     if (withPhoto && withPhoto.toLowerCase() === "true") {
       query.photos = { $exists: true, $ne: [] };
     }
-
-    const filteredCars = await Car.find(query);
-    const shuffledCars = arrayUtils.shuffleArray(filteredCars);
-
-    const encryptedCars = encryptData(shuffledCars , encryptionKey)
-    if (filteredCars.length === 0) {
+    const filteredMotos = await Moto.find(query);
+    const shuffledMotos = arrayUtils.shuffleArray(filteredMotos);
+    const encryptedMotos = encryptData(shuffledMotos , encryptionKey)
+    if (filteredMotos.length === 0) {
       return res
         .status(404)
-        .json({ error: "No cars found with the specified criteria." });
+        .json({ error: "No motos found with the specified criteria." });
     }
 
-    res.status(200).json({ cars: encryptedCars });
+    res.status(200).json({ motos: encryptedMotos });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
-
 module.exports = {
-  getFilteredCars,
+  getFilteredMotos,
 };
