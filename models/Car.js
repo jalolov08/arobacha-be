@@ -39,7 +39,7 @@ const carSchema = new mongoose.Schema({
     required: true,
   },
   engineCapacity: {
-    type: Number,
+    type: String,
     required: true,
   },
   condition: {
