@@ -18,4 +18,6 @@ router.delete("/brand/car/:brand", checkAuth, carBrand.deleteBrand);
 
 router.get("/category/filter/car" , carFilter.getFilteredCars )
 
+
+router.get("/category/car/:id/similar" , car.getSimilarCars)
 module.exports = router;

@@ -18,4 +18,6 @@ router.delete("/brand/moto/:brand", checkAuth, motoBrand.deleteMotoBrand);
 
 router.get("/category/filter/moto" , motoFilter.getFilteredMotos )
 
+router.get("/category/moto/:id/similar" , moto.getSimilarMotos)
+
 module.exports = router;

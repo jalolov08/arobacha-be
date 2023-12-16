@@ -170,9 +170,49 @@ async function deleteCar(req, res) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+async function getSimilarCars(req, res) {
+  const carId = req.params.id;
+
+  try {
+    const car = await Car.findById(carId);
+
+    if (!car) {
+      return res.status(404).json({ error: "Car not found." });
+    }
+
+    const searchParams = {
+      brand: car.brand,
+      model: car.model,
+      city:car.city,
+      year: { $gte: car.year - 4, $lte: car.year + 4 }, 
+      price: { $gte: car.price - 15000, $lte: car.price + 15000 },
+      _id: { $ne: car._id }, 
+    };
+
+   
+
+    const similarCars = await Car.find(searchParams).limit(10); 
+
+    if (similarCars.length === 0 && car.city) {
+      const carsInCity = await Car.find({ brand: car.brand, city: car.city , _id: { $ne: car._id }}).limit(10);
+      const encryptedCarsInCity = encryptData(carsInCity, encryptionKey);
+      res.status(200).json({ similarCars:encryptedCarsInCity });
+    } else {
+      const encryptedSimilarCars = encryptData(similarCars, encryptionKey);
+      res.status(200).json({ similarCars: encryptedSimilarCars});
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   addNewCar,
   getAllCars,
   getCarById,
   deleteCar,
+  getSimilarCars
 };

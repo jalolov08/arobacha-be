@@ -21,21 +21,19 @@ async function getMyAdds(req, res) {
   try {
     const cars = await Car.find({ owner: userId }).sort({ createdAt: -1 });
     const motos = await Moto.find({ owner: userId }).sort({ createdAt: -1 });
-    const combinedResults = [];
+    const adds = [];
 
     if (cars.length > 0) {
-      combinedResults.push(...cars.map((car) => car.toObject()));
+      adds.push(...cars.map((car) => car.toObject()));
     }
 
     if (motos.length > 0) {
-      combinedResults.push(...motos.map((moto) => moto.toObject()));
+      adds.push(...motos.map((moto) => moto.toObject()));
     }
 
-    combinedResults.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-
-    res.status(200).json(combinedResults);
+    adds.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const encryptedAdds = encryptData(adds, encryptionKey);
+    res.status(200).json({ adds: encryptedAdds });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
