@@ -4,10 +4,6 @@ const app = express();
 const routes = require("./routes.js");
 const helmet = require("helmet");
 require("dotenv").config();
-const authRoutes = require("./routes/authRoutes.js");
-const carRoutes = require("./routes/carRoutes.js");
-const motoRoutes = require("./routes/motoRoutes.js");
-const uploadRoutes = require("./routes/uploadRoutes.js");
 mongoose
   .connect(process.env.MONGODB_URI, {})
   .then(() => {
