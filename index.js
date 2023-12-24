@@ -14,6 +14,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use("/v1/uploads", express.static("uploads"));
 app.use(helmet());
 app.use("/v1", routes);
 
