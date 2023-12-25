@@ -4,6 +4,7 @@ const app = express();
 const routes = require("./routes.js");
 const helmet = require("helmet");
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 mongoose
   .connect(process.env.MONGODB_URI, {})
   .then(() => {
@@ -16,6 +17,7 @@ mongoose
 app.use(express.json());
 app.use("/v1/uploads", express.static("uploads"));
 app.use(helmet());
+app.use(cookieParser());
 app.use("/v1", routes);
 
 const PORT = process.env.PORT || 3333;

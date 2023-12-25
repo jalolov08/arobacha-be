@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { generateToken, generateRefreshToken } = require("../utils/tokenUtils");
 require("dotenv").config();
 
 async function authUser(req, res) {
@@ -93,24 +94,48 @@ async function authLogin(req, res) {
       return res.status(401).json({ error: "Неверный пароль." });
     }
 
-    const token = jwt.sign(
-      {
-        _id: existingUser._id,
-        username: existingUser.username,
-        name: existingUser.name,
-        phone: existingUser.phone,
-        about: existingUser.about,
-        photoUri: existingUser.photoUri,
-        follows: existingUser.follows,
-        followers: existingUser.followers,
-        role: existingUser.role,
-        photoUri: existingUser.photoUri,
-      },
-      process.env.JWT_SECRET,
-      { algorithm: "HS256" }
-    );
+    const token = generateToken(existingUser);
+    const refreshToken = generateRefreshToken(existingUser);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 90 * 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+async function refreshToken(req, res) {
+  try {
+    const refreshToken = req.cookies && req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Refresh token not found" });
+    }
+
+    const decodedToken = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    const user = await User.findById(decodedToken._id);
+
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
+
+    const newAccessToken = generateToken(user);
+
+    const newRefreshToken = generateRefreshToken(user);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      maxAge: 90 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ token: newAccessToken });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -129,4 +154,5 @@ function isValidURI(uri) {
 module.exports = {
   authUser,
   authLogin,
+  refreshToken,
 };
