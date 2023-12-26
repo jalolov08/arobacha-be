@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       required: false,
-      default:""
+      default: "",
     },
     about: String,
     photoUri: String,
@@ -41,6 +41,18 @@ const UserSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    favoriteCars: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Car",
+      },
+    ],
+    favoriteMotorcycles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Moto",
       },
     ],
   },

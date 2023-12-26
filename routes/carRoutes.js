@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const checkAuth = require("../utils/checkAuth");
-const fileUpload = require("../utils/fileUpload");
 const car = require("../controllers/carsController");
 const carBrand = require("../controllers/CarBrandModelController");
 const carFilter = require("../controllers/carFilterController")
