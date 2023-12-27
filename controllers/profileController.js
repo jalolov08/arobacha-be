@@ -1,5 +1,6 @@
 const Moto = require("../models/Moto");
 const Car = require("../models/Car");
+const User = require("../models/User");
 const { encryptData } = require("../utils/encryptData");
 require("dotenv").config;
 
@@ -37,8 +38,54 @@ async function getMyAds(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+async function updateMe(req, res) {
+  try {
+    const userId = req.user._id;
+    const { name, surname, phone, username, photoUri , about } = req.body;
+    const updateFields = {};
+
+    if (name) updateFields.name = name;
+    if (surname) updateFields.surname = surname;
+    if (phone) updateFields.phone = phone;
+    if (username) updateFields.username = username;
+    if (photoUri) updateFields.photoUri = photoUri;
+    if (about) updateFields.about = about;
+
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
+    if (phone || username) {
+      const existingUser = await User.findOne({
+        $or: [{ phone }, { username }],
+        _id: { $ne: userId },
+      });
+
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "Phone or username already in use" });
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ msg: "Updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
 
 module.exports = {
   getMe,
   getMyAds,
+  updateMe,
 };
