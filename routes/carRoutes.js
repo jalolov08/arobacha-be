@@ -4,10 +4,13 @@ const checkAuth = require("../utils/checkAuth");
 const car = require("../controllers/carsController");
 const carBrand = require("../controllers/CarBrandModelController");
 const carFilter = require("../controllers/carFilterController")
+const vin = require("../controllers/vinController")
 router.post("/category/car/", checkAuth, car.addNewCar);
 router.get("/category/car/", car.getAllCars);
 router.get("/category/car/:id", car.getCarById);
 router.delete("/category/car/delete/:carId", checkAuth, car.deleteCar);
+router.post("/category/car/decode" , vin.decodeVIN)
+
 
 router.get("/brand/car", carBrand.getCarBrands);
 router.get("/brand/car/:id/models", carBrand.getBrandModelsById);
