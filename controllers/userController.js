@@ -72,7 +72,7 @@ async function getUser(req, res) {
 
   try {
     const user = await User.findOne({ username }).select(
-      "name surname username about photoUri follows followers"
+      "name surname username about photoUri follows followers phone calls"
     );
 
     if (!user) {
@@ -89,6 +89,7 @@ async function getUser(req, res) {
       photoUri: user.photoUri,
       follows: followsCount,
       followers: followersCount,
+      ...(user.calls && { phone: user.phone }),
     };
     const encryptedUser = encryptData(userData, encryptionKey);
     res.json({

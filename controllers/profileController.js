@@ -41,31 +41,29 @@ async function getMyAds(req, res) {
 async function updateMe(req, res) {
   try {
     const userId = req.user._id;
-    const { name, surname, phone, username, photoUri , about } = req.body;
+    const { name, surname, username, photoUri, about, calls, chat } = req.body;
     const updateFields = {};
 
     if (name) updateFields.name = name;
     if (surname) updateFields.surname = surname;
-    if (phone) updateFields.phone = phone;
     if (username) updateFields.username = username;
     if (photoUri) updateFields.photoUri = photoUri;
     if (about) updateFields.about = about;
-
+    if (calls) updateFields.calls = calls;
+    if (chat) updateFields.chat = chat;
 
     if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({ error: "No fields to update" });
     }
 
-    if (phone || username) {
+    if (username) {
       const existingUser = await User.findOne({
-        $or: [{ phone }, { username }],
+        $or: [{ username }],
         _id: { $ne: userId },
       });
 
       if (existingUser) {
-        return res
-          .status(400)
-          .json({ error: "Phone or username already in use" });
+        return res.status(400).json({ error: "Username already in use" });
       }
     }
 
