@@ -6,6 +6,7 @@ const uploadRoutes = require("./routes/uploadRoutes.js");
 const profileRoutes = require("./routes/profileRoutes.js")
 const userRoutes = require("./routes/userRoutes.js")
 const favoriteRoutes = require("./routes/favoriteRoutes.js")
+const recommendRoutes = require("./routes/recommendRoutes.js")
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use("/", motoRoutes);
 router.use("/", uploadRoutes);
 router.use("/", userRoutes);
 router.use("/" , favoriteRoutes)
+router.use("/" , recommendRoutes)
 
 module.exports = router;

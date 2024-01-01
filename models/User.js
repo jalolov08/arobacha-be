@@ -65,6 +65,34 @@ const UserSchema = new mongoose.Schema(
         ref: "Moto",
       },
     ],
+    recommendedCars: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Car",
+        },
+      ],
+      validate: {
+        validator: function (array) {
+          return array.length <= 15;
+        },
+        message: "Recommended cars array cannot exceed 15 items.",
+      },
+    },
+    recommendedMotorcycles: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Moto",
+        },
+      ],
+      validate: {
+        validator: function (array) {
+          return array.length <= 15;
+        },
+        message: "Recommended motorcycles array cannot exceed 15 items.",
+      },
+    },
   },
   { timestamps: true }
 );
