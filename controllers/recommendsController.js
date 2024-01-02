@@ -51,37 +51,48 @@ async function addToRecommends(req, res) {
 
 async function getRecommends(req, res) {
   try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
+    const userId = req.user ? req.user._id : null;
+    const user = userId ? await User.findById(userId) : null;
 
-    if (!user) {
+    if (userId && !user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const recommendedCars = await Car.find({
-      _id: { $in: user.recommendedCars },
-    });
-    const recommendedMotorcycles = await Moto.find({
-      _id: { $in: user.recommendedMotorcycles },
-    });
+    let recommendation;
 
-    const recommendedCarIds = user.recommendedCars.map((car) => car.toString());
-    const recommendedMotoIds = user.recommendedMotorcycles.map((moto) =>
-      moto.toString()
-    );
+    if (userId) {
+      const recommendedCars = await Car.find({
+        _id: { $in: user.recommendedCars },
+      });
+      const recommendedMotorcycles = await Moto.find({
+        _id: { $in: user.recommendedMotorcycles },
+      });
 
-    const similarCars = await findSimilarVehicles(
-      recommendedCars,
-      Car,
-      recommendedCarIds
-    );
-    const similarMotorcycles = await findSimilarVehicles(
-      recommendedMotorcycles,
-      Moto,
-      recommendedMotoIds
-    );
-    const recommendation = shuffleArray([...similarCars, ...similarMotorcycles]);
-    
+      const recommendedCarIds = user.recommendedCars.map((car) =>
+        car.toString()
+      );
+      const recommendedMotoIds = user.recommendedMotorcycles.map((moto) =>
+        moto.toString()
+      );
+
+      const similarCars = await findSimilarVehicles(
+        recommendedCars,
+        Car,
+        recommendedCarIds
+      );
+      const similarMotorcycles = await findSimilarVehicles(
+        recommendedMotorcycles,
+        Moto,
+        recommendedMotoIds
+      );
+      recommendation = shuffleArray([...similarCars, ...similarMotorcycles]);
+    } else {
+      // Get a mix of cars and motorcycles if no user token
+      const allCars = await Car.find();
+      const allMotorcycles = await Moto.find();
+      recommendation = shuffleArray([...allCars, ...allMotorcycles]);
+    }
+
     return res.status(200).json({
       recommendation,
     });
