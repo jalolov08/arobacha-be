@@ -1,3 +1,5 @@
+const checkAuth = require("./checkAuth");
+
 const optionalCheckAuth = (req, res, next) => {
   if (req.headers.authorization) {
     checkAuth(req, res, next);
@@ -5,4 +7,5 @@ const optionalCheckAuth = (req, res, next) => {
     next();
   }
 };
+
 module.exports = optionalCheckAuth;

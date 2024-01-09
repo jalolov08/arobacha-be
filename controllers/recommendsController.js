@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const Car = require("../models/Car");
 const Moto = require("../models/Moto");
-const {shuffleArray} = require("../utils/arrayUtils")
+const { shuffleArray } = require("../utils/arrayUtils");
 async function addToRecommends(req, res) {
   try {
     const { vehicleId } = req.query;
@@ -87,15 +87,12 @@ async function getRecommends(req, res) {
       );
       recommendation = shuffleArray([...similarCars, ...similarMotorcycles]);
     } else {
-      // Get a mix of cars and motorcycles if no user token
       const allCars = await Car.find();
       const allMotorcycles = await Moto.find();
       recommendation = shuffleArray([...allCars, ...allMotorcycles]);
     }
 
-    return res.status(200).json({
-      recommendation,
-    });
+    return res.status(200).json(recommendation);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -107,7 +104,6 @@ async function findSimilarVehicles(
   Model,
   userRecommendedIds
 ) {
- 
   if (originalVehicles.length === 0) {
     return Model.find();
   }
@@ -119,7 +115,7 @@ async function findSimilarVehicles(
           (vehicle) => ({ brand: vehicle.brand }, { model: vehicle.model })
         ),
       },
-      { _id: { $nin: userRecommendedIds } }, 
+      { _id: { $nin: userRecommendedIds } },
     ],
   };
 
