@@ -31,15 +31,15 @@ const UserSchema = new mongoose.Schema(
     },
     about: String,
     photoUri: String,
-    calls:{
-      type:Boolean,
-      required:true,
-      default:true
+    calls: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
-    chat:{
-      type:Boolean,
-      required:true,
-      default:true
+    chat: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
     follows: [
       {
@@ -92,6 +92,11 @@ const UserSchema = new mongoose.Schema(
         },
         message: "Recommended motorcycles array cannot exceed 15 items.",
       },
+    },
+    verified: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }

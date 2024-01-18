@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { generateToken, generateRefreshToken } = require("../utils/tokenUtils");
 require("dotenv").config();
 
+const TEST_CODE = 5555;
+
 async function authUser(req, res) {
   try {
     const { name, surname, phone, username, password, photoUri } = req.body;
@@ -68,6 +70,21 @@ async function authUser(req, res) {
 
     const responseUser = { ...savedUser._doc };
     res.status(201).json(responseUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+async function verifyUser(req, res) {
+  try {
+    const { phone, code } = req.body;
+
+    if (code != TEST_CODE) {
+      return res.status(400).json({ error: "Invalid verification code." });
+    }
+    // доп.работа с номером для отправки смс и генерации ОТР
+
+    res.status(200).json({ message: "Verified" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -155,4 +172,5 @@ module.exports = {
   authUser,
   authLogin,
   refreshToken,
+  verifyUser
 };
