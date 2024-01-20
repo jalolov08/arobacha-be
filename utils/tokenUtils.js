@@ -13,23 +13,25 @@ function generateToken(user) {
       follows: user.follows,
       followers: user.followers,
       role: user.role,
+      surname: user.surname,
+      calls: user.calls,
+      chat: user.chat,
     },
     process.env.JWT_SECRET,
-    { algorithm: "HS256"  , expiresIn:"1h"}
+    { algorithm: "HS256", expiresIn: "100d" }
   );
 }
-function generateRefreshToken(user){
-    return jwt.sign(
-        {
-          _id: user._id,
-          username: user.username,
-          },
-        process.env.JWT_REFRESH_SECRET,
-        { algorithm: "HS256"  , expiresIn:"90d"}
-      );
+function generateRefreshToken(user) {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+    },
+    process.env.JWT_REFRESH_SECRET,
+    { algorithm: "HS256", expiresIn: "90d" }
+  );
 }
 module.exports = {
   generateToken,
-  generateRefreshToken
+  generateRefreshToken,
 };
-

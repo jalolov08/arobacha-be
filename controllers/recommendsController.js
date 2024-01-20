@@ -2,10 +2,6 @@ const User = require("../models/User");
 const Car = require("../models/Car");
 const Moto = require("../models/Moto");
 const { shuffleArray } = require("../utils/arrayUtils");
-const { encryptData } = require("../utils/encryptData");
-require("dotenv").config();
-
-const encryptionKey = process.env.CRYPTO_SECRET;
 async function addToRecommends(req, res) {
   try {
     const { vehicleId } = req.query;
@@ -93,10 +89,7 @@ async function getRecommends(req, res) {
     } else {
       const allCars = await Car.find();
       const allMotorcycles = await Moto.find();
-      recommendation = encryptData(
-        shuffleArray([...allCars, ...allMotorcycles]),
-        encryptionKey
-      );
+      recommendation = shuffleArray([...allCars, ...allMotorcycles]);
     }
 
     return res.status(200).json(recommendation);

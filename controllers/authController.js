@@ -80,7 +80,7 @@ async function verifyUser(req, res) {
     const { phone, code } = req.body;
 
     if (code != TEST_CODE) {
-      return res.status(400).json({ error: "Invalid verification code." });
+      return res.status(400).json({ message: "Invalid verification code." });
     }
     // доп.работа с номером для отправки смс и генерации ОТР
 
@@ -172,5 +172,5 @@ module.exports = {
   authUser,
   authLogin,
   refreshToken,
-  verifyUser
+  verifyUser,
 };
