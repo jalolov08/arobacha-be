@@ -19,8 +19,19 @@ async function getMe(req, res) {
 async function getMyAds(req, res) {
   const userId = req.user._id;
   try {
-    const cars = await Car.find({ owner: userId }).sort({ createdAt: -1 });
-    const motos = await Moto.find({ owner: userId }).sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 4;
+
+    const cars = await Car.find({ owner: userId })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    const motos = await Moto.find({ owner: userId })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
     const ads = [];
 
     if (cars.length > 0) {
@@ -33,7 +44,10 @@ async function getMyAds(req, res) {
 
     ads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const encryptedAds = encryptData(ads, encryptionKey);
-    res.status(200).json({ ads: encryptedAds });
+   
+    res.status(200).json({
+      ads: encryptedAds,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
