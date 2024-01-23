@@ -123,9 +123,28 @@ async function getUserAds(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+async function getUserAdsCount(req, res) {
+  const username = req.params.username;
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const cars = await Car.find({ owner: user._id });
+    const motos = await Moto.find({ owner: user._id });
+    const ads = [...cars, ...motos];
+    res.status(200).json({ adsCount: ads.length });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   followUser,
   unfollowUser,
   getUser,
   getUserAds,
+  getUserAdsCount,
 };
