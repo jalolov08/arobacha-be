@@ -82,15 +82,22 @@ async function addNewMoto(req, res) {
 }
 async function getMoto(req, res) {
   try {
-    const allMoto = await Moto.find();
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    const skip = (page - 1) * pageSize;
+
+    const allMoto = await Moto.find().skip(skip).limit(pageSize);
     const shuffledMoto = arrayUtils.shuffleArray(allMoto);
     const encryptedMotos = encryptData(shuffledMoto, encryptionKey);
-    res.status(200).json({ cars: encryptedMotos });
+
+    res.status(200).json({ motos: encryptedMotos });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
 async function getMotoById(req, res) {
   const motoId = req.params.id;
   try {

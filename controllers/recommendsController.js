@@ -59,6 +59,8 @@ async function getRecommends(req, res) {
     }
 
     let recommendation;
+    let page = parseInt(req.query.page) || 1;
+    let pageSize = parseInt(req.query.pageSize) || 10;
 
     if (userId) {
       const recommendedCars = await Car.find({
@@ -85,13 +87,19 @@ async function getRecommends(req, res) {
         Moto,
         recommendedMotoIds
       );
-      recommendation = shuffleArray([...similarCars, ...similarMotorcycles]);
+
+      recommendation = shuffleArray([
+        ...similarCars,
+        ...similarMotorcycles,
+      ]).slice((page - 1) * pageSize, page * pageSize);
     } else {
       const allCars = await Car.find();
       const allMotorcycles = await Moto.find();
-      recommendation = shuffleArray([...allCars, ...allMotorcycles]);
+      recommendation = shuffleArray([...allCars, ...allMotorcycles]).slice(
+        (page - 1) * pageSize,
+        page * pageSize
+      );
     }
-
     return res.status(200).json(recommendation);
   } catch (error) {
     console.error(error);
