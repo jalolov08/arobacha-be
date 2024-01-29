@@ -100,7 +100,7 @@ async function addNewCar(req, res) {
       engineCapacity,
       condition,
       description,
-      owner: req.user._id,
+      owner: req.user.username,
       color,
       doors,
       bodyType,
@@ -163,7 +163,7 @@ async function deleteCar(req, res) {
     if (!existingCar) {
       return res.status(404).json({ error: "Car not found." });
     }
-    if (req.user._id !== existingCar.owner.toString()) {
+    if (req.user.username !== existingCar.owner.toString()) {
       return res.status(403).json({
         error: "Permission denied. User is not the owner of the car.",
       });

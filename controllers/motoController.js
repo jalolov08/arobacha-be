@@ -65,7 +65,7 @@ async function addNewMoto(req, res) {
       engineCapacity,
       condition,
       description,
-      owner: req.user._id,
+      owner: req.user.username,
       color,
       wheels,
       bikeType,
@@ -122,7 +122,7 @@ async function deleteMoto(req, res) {
     if (!existingMoto) {
       return res.status(404).json({ error: "Moto not found" });
     }
-    if (req.user._id !== existingMoto.owner.toString()) {
+    if (req.user.username !== existingMoto.owner.toString()) {
       return res.status(403).json({
         error: "Permission denied.User is not the owner of the moto",
       });
