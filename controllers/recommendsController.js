@@ -2,6 +2,11 @@ const User = require("../models/User");
 const Car = require("../models/Car");
 const Moto = require("../models/Moto");
 const { shuffleArray } = require("../utils/arrayUtils");
+const { encryptData } = require("../utils/encryptData");
+require("dotenv").config();
+
+const encryptionKey = process.env.CRYPTO_SECRET;
+
 async function addToRecommends(req, res) {
   try {
     const { vehicleId } = req.query;
@@ -129,8 +134,32 @@ async function findSimilarVehicles(
 
   return Model.find(criteria);
 }
+async function getAdById(req, res) {
+  const adId = req.params.id;
+  try {
+    const ad = await findAdById(adId);
+    if (!ad) {
+      return res.status(404).json({ error: "Ad not found." });
+    }
+    ad.views = (ad.views || 0) + 1;
+    ad.viewsToday = (ad.viewsToday || 0) + 1;
+    await ad.save();
+    const encryptedAd = encryptData(ad , encryptionKey)
+    res.status(200).json({ ad:encryptedAd });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+async function findAdById(adId) {
+  const moto = await Moto.findById(adId);
+  if (moto) return moto;
+  return await Car.findById(adId);
+}
 
 module.exports = {
   addToRecommends,
   getRecommends,
+  getAdById
 };

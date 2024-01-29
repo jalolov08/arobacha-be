@@ -109,7 +109,7 @@ async function getMotoById(req, res) {
     existingMoto.viewsToday = (existingMoto.viewsToday || 0) + 1;
     await existingMoto.save();
     const encryptedMoto = encryptData(existingMoto, encryptionKey);
-    res.status(200).json({ moto: encryptedMoto });
+    res.status(200).json({ ad: encryptedMoto });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
