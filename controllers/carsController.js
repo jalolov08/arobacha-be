@@ -30,7 +30,7 @@ async function addNewCar(req, res) {
     condition,
     description,
     color,
-    doors,
+    // doors,
     bodyType,
     customsCleared,
     city,
@@ -60,7 +60,7 @@ async function addNewCar(req, res) {
       !condition ||
       !description ||
       !color ||
-      !doors ||
+      // !doors ||
       !bodyType ||
       !customsCleared ||
       !engineCapacity ||
@@ -102,7 +102,7 @@ async function addNewCar(req, res) {
       description,
       owner: req.user.username,
       color,
-      doors,
+      // doors,
       bodyType,
       customsCleared,
       city,

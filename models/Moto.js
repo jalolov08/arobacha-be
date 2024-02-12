@@ -7,6 +7,11 @@ const motorcycleSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      default: "moto",
+      required: true,
+    },
     model: {
       type: String,
       required: true,
@@ -61,11 +66,11 @@ const motorcycleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    wheels: {
-      type: Number,
-      required: true,
-    },
-    bikeType: {
+    // wheels: {
+    //   type: Number,
+    //   required: true,
+    // },
+    bodyType: {
       type: String,
       enum: ["Cruiser", "Sportbike", "Touring", "Off-road", "Scooter", "Other"],
       required: true,

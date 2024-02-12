@@ -7,6 +7,11 @@ const carSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      default: "car",
+      required: true,
+    },
     model: {
       type: String,
       required: true,
@@ -39,6 +44,7 @@ const carSchema = new mongoose.Schema(
       enum: ["Automatic", "Manual"],
       required: true,
     },
+
     engineCapacity: {
       type: String,
       required: true,
@@ -61,10 +67,10 @@ const carSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    doors: {
-      type: Number,
-      required: true,
-    },
+    // doors: {
+    //   type: Number,
+    //   required: false,
+    // },
     bodyType: {
       type: String,
       enum: ["Sedan", "Coupe", "SUV", "Truck", "Van", "Convertible", "Other"],

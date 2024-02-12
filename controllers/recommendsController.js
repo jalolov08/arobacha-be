@@ -70,10 +70,10 @@ async function getRecommends(req, res) {
     if (userId) {
       const recommendedCars = await Car.find({
         _id: { $in: user.recommendedCars },
-      });
+      }, 'brand model year price city');
       const recommendedMotorcycles = await Moto.find({
         _id: { $in: user.recommendedMotorcycles },
-      });
+      }, 'brand model year price city');
 
       const recommendedCarIds = user.recommendedCars.map((car) =>
         car.toString()
@@ -98,8 +98,8 @@ async function getRecommends(req, res) {
         ...similarMotorcycles,
       ]).slice((page - 1) * pageSize, page * pageSize);
     } else {
-      const allCars = await Car.find();
-      const allMotorcycles = await Moto.find();
+      const allCars = await Car.find({}, 'brand model year price city photos');
+      const allMotorcycles = await Moto.find({}, 'brand model year price city photos');
       recommendation = shuffleArray([...allCars, ...allMotorcycles]).slice(
         (page - 1) * pageSize,
         page * pageSize
@@ -111,6 +111,7 @@ async function getRecommends(req, res) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
 
 async function findSimilarVehicles(
   originalVehicles,

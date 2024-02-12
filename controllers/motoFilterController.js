@@ -16,7 +16,7 @@ async function getFilteredMotos(req, res) {
     maxMileage,
     city,
     customsCleared,
-    bikeType,
+    bodyType,
     wheels,
     minEngineCapacity,
     maxEngineCapacity,
@@ -86,7 +86,7 @@ async function getFilteredMotos(req, res) {
       query.customsCleared = customsCleared === "true";
     }
 
-    if (bikeType) {
+    if (bodyType) {
       query.bodyType = { $in: bodyType.split(",") };
     }
 
