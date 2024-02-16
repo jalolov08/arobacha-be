@@ -135,34 +135,38 @@ async function deleteMoto(req, res) {
   }
 }
 
-async function getSimilarMotos(req ,res){
-  const motoId = req.params.id
+async function getSimilarMotos(req, res) {
+  const motoId = req.params.id;
 
   try {
-    const moto = await Moto.findById(motoId)
+    const moto = await Moto.findById(motoId);
 
     if (!moto) {
       return res.status(404).json({ error: "Moto not found." });
     }
 
     const searchParams = {
-      brand: car.brand,
-      model: car.model,
-      city:car.city,
-      year: { $gte: car.year - 4, $lte: car.year + 4 }, 
-      price: { $gte: car.price - 20000, $lte: car.price + 20000 },
-      _id: { $ne: car._id }, 
+      brand: moto.brand,
+      model: moto.model,
+      city: moto.city,
+      year: { $gte: moto.year - 4, $lte: moto.year + 4 },
+      price: { $gte: moto.price - 20000, $lte: moto.price + 20000 },
+      _id: { $ne: moto._id },
     };
-    const similarMotos = await Moto.find(searchParams).limit(10)
+    const similarMotos = await Moto.find(searchParams).limit(10);
 
-    if (similarMotos.length === 0 && car.city) {
-      const motoInCity = await Moto.find({ brand: car.brand, city: car.city , _id: { $ne: car._id }}).limit(10);
-      const encryptedSimilarMotos = encryptData(motoInCity , encryptionKey)
-      res.status(200).json({ similarMotos:encryptedSimilarMotos });
-
-    } 
-    const encryptedSimilarMotos = encryptData(similarMotos, encryptionKey);
-    res.status(200).json({ similarMotos: encryptedSimilarMotos});
+    if (similarMotos.length === 0 && moto.city) {
+      const motoInCity = await Moto.find({
+        brand: moto.brand,
+        city: moto.city,
+        _id: { $ne: moto._id },
+      }).limit(10);
+      const encryptedSimilarMotos = encryptData(motoInCity, encryptionKey);
+      return res.status(200).json({ similarMotos: encryptedSimilarMotos });
+    } else {
+      const encryptedSimilarMotos = encryptData(similarMotos, encryptionKey);
+      return res.status(200).json({ similarMotos: encryptedSimilarMotos });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -173,5 +177,5 @@ module.exports = {
   getMoto,
   getMotoById,
   deleteMoto,
-  getSimilarMotos
+  getSimilarMotos,
 };
