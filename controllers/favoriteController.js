@@ -31,16 +31,16 @@ async function addToFavorites(req, res) {
     if (isAlreadyAdded) {
       return res.status(400).json({ msg: "Item already in favorites" });
     }
-
+    console.log(itemToAdd._id);
     const newItem = {
       item: itemToAdd._id,
       addedAt: new Date(),
     };
 
     if (itemToAdd instanceof Car) {
-      user.favoriteCars.push(newItem);
+      user.favoriteCars.push(newItem.item); 
     } else if (itemToAdd instanceof Moto) {
-      user.favoriteMotorcycles.push(newItem);
+      user.favoriteMotorcycles.push(newItem.item); 
     }
 
     await user.save();

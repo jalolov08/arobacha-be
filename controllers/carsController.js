@@ -126,7 +126,7 @@ async function getAllCars(req, res) {
     const allCars = await Car.find().skip(skip).limit(pageSize);
     const shuffledCars = arrayUtils.shuffleArray(allCars);
     const encryptedCars = encryptData(shuffledCars, encryptionKey);
-    res.status(200).json({ cars: encryptedCars });
+    res.status(200).json({ ads: encryptedCars });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -205,10 +205,10 @@ async function getSimilarCars(req, res) {
         _id: { $ne: car._id },
       }).limit(10);
       const encryptedCarsInCity = encryptData(carsInCity, encryptionKey);
-      res.status(200).json({ similarCars: encryptedCarsInCity });
+      res.status(200).json({ similarAds: encryptedCarsInCity });
     } else {
       const encryptedSimilarCars = encryptData(similarCars, encryptionKey);
-      res.status(200).json({ similarCars: encryptedSimilarCars });
+      res.status(200).json({ similarAds: encryptedSimilarCars });
     }
   } catch (error) {
     console.error(error);

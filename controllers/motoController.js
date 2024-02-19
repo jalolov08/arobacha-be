@@ -91,7 +91,7 @@ async function getMoto(req, res) {
     const shuffledMoto = arrayUtils.shuffleArray(allMoto);
     const encryptedMotos = encryptData(shuffledMoto, encryptionKey);
 
-    res.status(200).json({ motos: encryptedMotos });
+    res.status(200).json({ ads: encryptedMotos });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -162,10 +162,10 @@ async function getSimilarMotos(req, res) {
         _id: { $ne: moto._id },
       }).limit(10);
       const encryptedSimilarMotos = encryptData(motoInCity, encryptionKey);
-      return res.status(200).json({ similarMotos: encryptedSimilarMotos });
+      return res.status(200).json({ similarAds: encryptedSimilarMotos });
     } else {
       const encryptedSimilarMotos = encryptData(similarMotos, encryptionKey);
-      return res.status(200).json({ similarMotos: encryptedSimilarMotos });
+      return res.status(200).json({ similarAds: encryptedSimilarMotos });
     }
   } catch (error) {
     console.error(error);
