@@ -21,31 +21,27 @@ async function addToFavorites(req, res) {
     }
 
     const isAlreadyAdded =
-      user.favoriteCars.some(
-        (favCar) => favCar.item.toString() === id.toString()
-      ) ||
-      user.favoriteMotorcycles.some(
-        (favMoto) => favMoto.item.toString() === id.toString()
-      );
+      user.favoriteCars.some((favCar) => favCar.item === id) ||
+      user.favoriteMotorcycles.some((favMoto) => favMoto.item === id);
 
     if (isAlreadyAdded) {
       return res.status(400).json({ msg: "Item already in favorites" });
     }
-    console.log(itemToAdd._id);
+    console.log(itemToAdd);
     const newItem = {
       item: itemToAdd._id,
       addedAt: new Date(),
     };
 
     if (itemToAdd instanceof Car) {
-      user.favoriteCars.push(newItem.item); 
+      user.favoriteCars.push(newItem.item);
     } else if (itemToAdd instanceof Moto) {
-      user.favoriteMotorcycles.push(newItem.item); 
+      user.favoriteMotorcycles.push(newItem.item);
     }
 
     await user.save();
 
-    res.status(200).json({ msg: "Success" });
+    res.status(200).json(itemToAdd);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Internal Server Error" });
@@ -63,31 +59,30 @@ async function removeFromFavorites(req, res) {
     }
 
     const { id } = req.body;
-
     const isItemInFavorites =
-      user.favoriteCars.some(
-        (favCar) => favCar.item.toString() === id.toString()
-      ) ||
-      user.favoriteMotorcycles.some(
-        (favMoto) => favMoto.item.toString() === id.toString()
-      );
+      user.favoriteCars.some((favCar) => favCar.toString() === id) ||
+      user.favoriteMotorcycles.some((favMoto) => favMoto.toString() === id);
 
     if (!isItemInFavorites) {
       return res.status(400).json({ msg: "Item not in favorites" });
     }
 
-    if (itemToRemove instanceof Car) {
+    const car = await Car.findById(id);
+    const moto = await Moto.findById(id);
+
+    if (car) {
       user.favoriteCars = user.favoriteCars.filter(
-        (favCar) => favCar.item.toString() !== id.toString()
+        (favCar) => favCar.toString() !== id
       );
-    } else if (itemToRemove instanceof Moto) {
+    } else if (moto) {
       user.favoriteMotorcycles = user.favoriteMotorcycles.filter(
-        (favMoto) => favMoto.item.toString() !== id.toString()
+        (favMoto) => favMoto.toString() !== id
       );
+    } else {
+      return res.status(404).json({ msg: "Item not found" });
     }
 
     await user.save();
-
     res.status(200).json({ msg: "Success" });
   } catch (error) {
     console.error(error);
